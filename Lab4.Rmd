@@ -1,0 +1,93 @@
+---
+title: "Lab4"
+author: "J Bai"
+date: "10/3/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+standardize <- function(v, centered_only = FALSE, na.remove = FALSE) {
+  mu <- mean(v, na.rm = na.remove)
+  sigma <- sd(v, na.rm = na.remove)
+  if(centered_only) {
+    return(v - mu)
+  }else{
+    return((v-mu)/sigma)
+  }
+}
+
+v <- c(1,2,3,4, NA)
+standardize(v, centered_only = T, na.remove = T)
+```
+
+
+```{r}
+matrix_sum <- function(m) {
+  result <- 0
+  for(i in m) {
+    result = result + i
+  }
+  return(result)
+}
+
+m <- matrix(
+  1:16, 
+  nrow=4,   
+  ncol=4,   
+  byrow = FALSE)
+m
+matrix_sum(m)
+```
+
+```{r}
+curve(dnorm, from=-3, to=3, xlim=c(-3, 6), lwd=2, col=4, axes=FALSE, xlab=NA, ylab=NA)
+curve(dnorm(x, mean=3.2), add=TRUE, col=2, lwd=2, from=0, to=6)
+coord.x <- c(qnorm(0.95),
+seq(qnorm(0.95), 0, by=-0.01), 0)
+coord.y <- c(0, dnorm(coord.x[-c(1, length(coord.x))], mean=3.2), 0) 
+polygon(coord.x, coord.y, col=rgb(1, 0, 0, 0.5))
+coord.x <- c(qnorm(0.95),
+seq(qnorm(0.95), 3, by=0.01), 3)
+coord.y <- c(0, dnorm(coord.x[-c(1, length(coord.x))]), 0) 
+polygon(coord.x, coord.y, col=rgb(0, 0, 1, 0.5))
+abline(v = qnorm(0.95), lty=2, lwd=2)
+text(1, 0.02, labels = expression(beta))
+text(2, 0.02, labels = expression(alpha), col = "white")
+axis(1, at = c(0, 3.2), labels = c(expression(theta[0]), expression(theta[a])))
+axis(2)
+box()
+legend("topleft", c("Type I error", "Type II error"), fill=c(rgb(0, 0, 1, 0.5), rgb(1, 0, 0, 0.5)))
+```
+
+
+```{r}
+isPrime <- function(n) {
+  tag = 0
+  
+  if(n==1) {
+    return(F)
+  } else if(n == 2 | n == 3) {
+    return(T)
+  } else {
+    for(i in 2:floor(n/2)) {
+      if(n %% i == 0) {
+        tag = 1
+        break
+      }
+    }
+  }
+  
+  if(tag == 1) {
+    return(F)
+  } else {
+    return(T)
+  }
+ 
+}
+
+isPrime(11)
+```
