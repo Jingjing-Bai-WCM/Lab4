@@ -10,6 +10,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+library(tidyverse)
+```
+
+```{r}
 standardize <- function(v, centered_only = FALSE, na.remove = FALSE) {
   mu <- mean(v, na.rm = na.remove)
   sigma <- sd(v, na.rm = na.remove)
@@ -46,12 +50,10 @@ matrix_sum(m)
 ```{r}
 curve(dnorm, from=-3, to=3, xlim=c(-3, 6), lwd=2, col=4, axes=FALSE, xlab=NA, ylab=NA)
 curve(dnorm(x, mean=3.2), add=TRUE, col=2, lwd=2, from=0, to=6)
-coord.x <- c(qnorm(0.95),
-seq(qnorm(0.95), 0, by=-0.01), 0)
+coord.x <- c(qnorm(0.95),seq(qnorm(0.95), 0, by=-0.01), 0)
 coord.y <- c(0, dnorm(coord.x[-c(1, length(coord.x))], mean=3.2), 0) 
 polygon(coord.x, coord.y, col=rgb(1, 0, 0, 0.5))
-coord.x <- c(qnorm(0.95),
-seq(qnorm(0.95), 3, by=0.01), 3)
+coord.x <- c(qnorm(0.95),seq(qnorm(0.95), 3, by=0.01), 3)
 coord.y <- c(0, dnorm(coord.x[-c(1, length(coord.x))]), 0) 
 polygon(coord.x, coord.y, col=rgb(0, 0, 1, 0.5))
 abline(v = qnorm(0.95), lty=2, lwd=2)
@@ -63,6 +65,43 @@ box()
 legend("topleft", c("Type I error", "Type II error"), fill=c(rgb(0, 0, 1, 0.5), rgb(1, 0, 0, 0.5)))
 ```
 
+```{r}
+coord0.x <- c(qnorm(0.95),seq(qnorm(0.95), 0, by=-0.01), 0)
+coord0.y <- c(0, dnorm(coord0.x[-c(1, length(coord0.x))], mean=3.2), 0) 
+coord1.x <- c(qnorm(0.95),seq(qnorm(0.95), 3, by=0.01), 3)
+coord1.y <- c(0, dnorm(coord1.x[-c(1, length(coord1.x))]), 0) 
+h0.x <- seq(-3, 3, 0.1)
+h0.y <- dnorm(h0.x, 0, 1)
+h0 <- data.frame(h0.x, h0.y)
+h1.x <- seq(0, 6, 0.1)
+h1.y <- dnorm(h1.x, 3.2, 1)
+h1 <- data.frame(h1.x, h1.y)
+ggplot() +
+  geom_vline(aes(xintercept = qnorm(0.95)), linetype = 2, lwd = 1) +
+  geom_line(data = h0, mapping = aes(h0.x, h0.y), col = 4, lwd = 1) +
+  geom_line(data = h1, mapping = aes(h1.x, h1.y), col = 2, lwd = 1) +
+  geom_polygon(aes(coord0.x, coord0.y, fill = "color1"), col = 1, alpha = 0.5) +
+  annotate("text", x = 1, y = 0.02, label = expression(beta)) +
+  geom_polygon(aes(coord1.x, coord1.y, fill = "color2"), col = 1, alpha = 0.5) +
+  annotate("text", x = 2, y = 0.02, label = expression(alpha), col = "white") +
+  scale_x_continuous(breaks = c(0, 3.2), labels=c(expression(theta[0]), expression(theta[a]))) +
+  scale_fill_manual(values = c(color1=rgb(1, 0, 0, 0.5), color2=rgb(0, 0, 1, 0.5)), label = c("Type I error", "Type II error")) + 
+  theme(text = element_text(size=15),
+        axis.title=element_blank(),
+        axis.ticks = element_line(size = 1),
+        panel.background = element_rect(fill = NA, color = "black"),
+        panel.grid.minor = element_blank(),
+        legend.title = element_blank(),
+        legend.position = c(0, 1),
+        legend.justification = c(0, 1),
+        legend.box.background = element_rect(colour = "black"),
+     
+        legend.box.margin = margin(2, 0, 0, 2),
+        legend.text = element_text(size = 12))
+
+
+
+```
 
 ```{r}
 isPrime <- function(n) {
